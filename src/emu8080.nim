@@ -2,8 +2,30 @@ import macros
 from sugar import `->`
 
 type
+  Flags = object
+    ## flag is set whenever result is equal to zero
+    z: bool
+    ## set when bit 7 (MSB) of math instruction is set
+    s: bool
+    ## set when answer has even parity / clear when odd parity
+    p: bool
+    ## set when instruction results in a carry
+    cy: bool
+    ## unknown
+    ac: bool
+  Registers = object
+    a: byte
+    b: byte
+    c: byte
+    d: byte
+    e: byte
+    h: byte
+    l: byte
   Emulator = ref object
     ram: array[65535, byte]
+    registers: Registers
+    flags: Flags
+    pos: uint16
   EmuCall = ((Emulator, seq[byte]) -> void)
   Instruction = object
     ## The amount of bytes that the instruction uses
@@ -50,12 +72,27 @@ macro defineInstructions(instructions: array[0xFF, Instruction],
 
 var instructions: array[0xFF, Instruction]
 
-
+# The format is as follows
+# OPCODE, PARAM BYTES, DISASSEMBLED SYMBOL NAME
 defineInstructions instructions:
   0x00 0 "NOP":
     discard
-  0x01 2 "LXI":
-    echo "Hello!"
+  0x01 2 "LXI\tB":
+    discard
+  0x02 0 "STAX\tB":
+    discard
+  0x03 0 "INX\tB":
+    discard
+  0x04 0 "INR\tB":
+    discard
+  0x05 0 "DCR\tB":
+    discard
+  0x06 0 "MVI\tB":
+    discard
+  0x07 0 "RLC":
+    discard
+  0x08 0 "NOP":
+    discard
 
 
 let emulator = Emulator()
